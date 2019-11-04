@@ -203,15 +203,20 @@ namespace UnityEditor.Rendering.HighDefinition
             // code is internal, we have to copy/paste some stuff from the editor code :(
 
             var cam = p.baseCameraSettings;
-            var projectionType = cam.orthographic.boolValue ? ProjectionType.Orthographic : ProjectionType.Perspective;
 
-            EditorGUI.BeginChangeCheck();
-            EditorGUI.showMixedValue = cam.orthographic.hasMultipleDifferentValues;
-            projectionType = (ProjectionType)EditorGUILayout.EnumPopup(projectionContent, projectionType);
-            EditorGUI.showMixedValue = false;
-            if (EditorGUI.EndChangeCheck())
-                cam.orthographic.boolValue = (projectionType == ProjectionType.Orthographic);
+            Rect perspectiveRect = GUILayoutUtility.GetRect(1, EditorGUIUtility.singleLineHeight);
+            ProjectionType projectionType;
+            EditorGUI.BeginProperty(perspectiveRect, projectionContent, cam.orthographic);
+            {
+                projectionType = cam.orthographic.boolValue ? ProjectionType.Orthographic : ProjectionType.Perspective;
 
+                EditorGUI.BeginChangeCheck();
+                projectionType = (ProjectionType)EditorGUI.EnumPopup(perspectiveRect, projectionContent, projectionType);
+                if (EditorGUI.EndChangeCheck())
+                    cam.orthographic.boolValue = (projectionType == ProjectionType.Orthographic);
+            }
+            EditorGUI.EndProperty();
+            
             if (cam.orthographic.hasMultipleDifferentValues)
                 return;
 
