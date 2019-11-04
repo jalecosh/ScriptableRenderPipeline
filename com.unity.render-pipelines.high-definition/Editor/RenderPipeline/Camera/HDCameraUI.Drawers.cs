@@ -433,7 +433,16 @@ namespace UnityEditor.Rendering.HighDefinition
 
         static void Drawer_Antialiasing(SerializedHDCamera p, Editor owner)
         {
-            p.antialiasing.intValue = EditorGUILayout.Popup(antialiasingContent, p.antialiasing.intValue, antialiasingModeNames);
+            Rect antiAliasingRect = GUILayoutUtility.GetRect(1, EditorGUIUtility.singleLineHeight);
+            EditorGUI.BeginProperty(antiAliasingRect, antialiasingContent, p.antialiasing);
+            {
+                EditorGUI.BeginChangeCheck();
+                int selectedValue = EditorGUI.Popup(antiAliasingRect, antialiasingContent, p.antialiasing.intValue, antialiasingModeNames);
+                if (EditorGUI.EndChangeCheck())
+                    p.antialiasing.intValue = selectedValue;
+            }
+            EditorGUI.EndProperty();
+
             if (p.antialiasing.intValue == (int)HDAdditionalCameraData.AntialiasingMode.SubpixelMorphologicalAntiAliasing)
             {
                 EditorGUILayout.PropertyField(p.SMAAQuality, SMAAQualityPresetContent);
