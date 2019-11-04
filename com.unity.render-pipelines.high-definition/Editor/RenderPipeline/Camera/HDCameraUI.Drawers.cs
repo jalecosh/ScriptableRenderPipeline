@@ -321,30 +321,46 @@ namespace UnityEditor.Rendering.HighDefinition
                 EditorGUILayout.PropertyField(p.iso, isoContent);
 
                 // Custom layout for shutter speed
-                int unitMenuWidth = 80;
-                int offsetFix = 25;
-                float indentOffset = EditorGUI.indentLevel * 15f;
+                const int k_UnitMenuWidth = 80;
+                const int k_OffsetPerIndent = 15;
+                const int k_LabelFieldSeparator = 2;
+                float indentOffset = EditorGUI.indentLevel * k_OffsetPerIndent;
+                int oldIndentLevel = EditorGUI.indentLevel;
+
                 var lineRect = GUILayoutUtility.GetRect(1, EditorGUIUtility.singleLineHeight);
-                var labelRect = new Rect(lineRect.x, lineRect.y, EditorGUIUtility.labelWidth - indentOffset, lineRect.height);
-                var fieldRect = new Rect(labelRect.xMax, lineRect.y, lineRect.width - labelRect.width - unitMenuWidth, lineRect.height);
-                var unitMenu = new Rect(fieldRect.xMax - offsetFix, lineRect.y, unitMenuWidth + offsetFix, lineRect.height);
+                var labelRect = new Rect(lineRect.x, lineRect.y, EditorGUIUtility.labelWidth, lineRect.height);
+                var fieldRect = new Rect(labelRect.xMax + k_LabelFieldSeparator, lineRect.y, lineRect.width - labelRect.width - k_UnitMenuWidth - k_LabelFieldSeparator * 2, lineRect.height);
+                var unitMenu = new Rect(fieldRect.xMax + k_LabelFieldSeparator, lineRect.y, k_UnitMenuWidth, lineRect.height);
+
+                //We cannot had the shutterSpeedState as this is not a serialized property but a global edition mode.
+                //This imply that it will never go bold nor can be reverted in prefab overrides
+                EditorGUI.BeginProperty(labelRect, shutterSpeedContent, p.shutterSpeed);
+                EditorGUI.LabelField(labelRect, shutterSpeedContent);
+                EditorGUI.EndProperty();
+                EditorGUI.indentLevel = 0;
 
                 m_ShutterSpeedState.value = (ShutterSpeedUnit)EditorGUI.Popup(unitMenu, (int)m_ShutterSpeedState.value, k_ShutterSpeedUnitNames);
-
-                EditorGUI.PrefixLabel(labelRect, shutterSpeedContent);
-
-                float shutterSpeed = p.shutterSpeed.floatValue;
-                if (shutterSpeed > 0f && m_ShutterSpeedState.value == ShutterSpeedUnit.OneOverSecond)
-                    shutterSpeed = 1f / shutterSpeed;
-
-                shutterSpeed = EditorGUI.FloatField(fieldRect, shutterSpeed);
-
-                if (shutterSpeed <= 0f)
-                    p.shutterSpeed.floatValue = 0f;
-                else if (m_ShutterSpeedState.value == ShutterSpeedUnit.OneOverSecond)
-                    p.shutterSpeed.floatValue = 1f / shutterSpeed;
-                else
-                    p.shutterSpeed.floatValue = shutterSpeed;
+                
+                float previousShutterSpeed = p.shutterSpeed.floatValue;
+                if (previousShutterSpeed > 0f && m_ShutterSpeedState.value == ShutterSpeedUnit.OneOverSecond)
+                    previousShutterSpeed = 1f / previousShutterSpeed;
+                
+                EditorGUI.BeginProperty(fieldRect, shutterSpeedContent, p.shutterSpeed);
+                {
+                    EditorGUI.BeginChangeCheck();
+                    var newShutterSpeed = EditorGUI.FloatField(fieldRect, previousShutterSpeed);
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        if (newShutterSpeed <= 0f)
+                            p.shutterSpeed.floatValue = 0f;
+                        else if (m_ShutterSpeedState.value == ShutterSpeedUnit.OneOverSecond)
+                            p.shutterSpeed.floatValue = 1f / newShutterSpeed;
+                        else
+                            p.shutterSpeed.floatValue = newShutterSpeed;
+                    }
+                }
+                EditorGUI.EndProperty();
+                EditorGUI.indentLevel = oldIndentLevel;
 
                 using (var horizontal = new EditorGUILayout.HorizontalScope())
                 using (var propertyScope = new EditorGUI.PropertyScope(horizontal.rect, gateFitContent, cam.gateFit))
