@@ -10,6 +10,12 @@ namespace UnityEngine.Rendering.HighDefinition
     [System.Serializable]
     public class DrawRenderersCustomPass : CustomPass
     {
+        public enum ShaderPass
+        {
+            DepthPrepass,
+            Forward,
+        }
+
         // Used only for the UI to keep track of the toggle state
         public bool filterFoldout;
         public bool rendererFoldout;
@@ -27,6 +33,8 @@ namespace UnityEngine.Rendering.HighDefinition
         public bool overrideDepthState = false;
         public CompareFunction depthCompareFunction = CompareFunction.LessEqual;
         public bool depthWrite = true;
+
+        public ShaderPass shaderPass;
     
         int fadeValueId;
 
@@ -57,6 +65,8 @@ namespace UnityEngine.Rendering.HighDefinition
             cullingParameters.cullingMask |= (uint)(int)layerMask;
         }
 
+        protected ShaderTagId[] shaderPasses = 
+
         /// <summary>
         /// Execute the DrawRenderers with parameters setup from the editor
         /// </summary>
@@ -85,9 +95,11 @@ namespace UnityEngine.Rendering.HighDefinition
                 depthState = new DepthState(depthWrite, depthCompareFunction),
             };
 
+            PerObjectData renderConfig = hdCamera.frameSettings.IsEnabled(FrameSettingsField.Shadowmask) ? HDUtils.k_RendererConfigurationBakedLightingWithShadowMask : HDUtils.k_RendererConfigurationBakedLighting;
+
             var result = new RendererListDesc(shaderPasses, cullingResult, hdCamera.camera)
             {
-                rendererConfiguration = PerObjectData.None,
+                rendererConfiguration = renderConfig,
                 renderQueueRange = GetRenderQueueRange(renderQueueType),
                 sortingCriteria = sortingCriteria,
                 excludeObjectMotionVectors = false,

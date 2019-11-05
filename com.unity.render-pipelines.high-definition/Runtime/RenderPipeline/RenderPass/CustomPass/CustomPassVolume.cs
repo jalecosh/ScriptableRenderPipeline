@@ -35,7 +35,7 @@ namespace UnityEngine.Rendering.HighDefinition
         /// <summary>
         /// Where the custom passes are going to be injected in HDRP
         /// </summary>
-        public CustomPassInjectionPoint injectionPoint;
+        public CustomPassInjectionPoint injectionPoint = CustomPassInjectionPoint.BeforeTransparent;
 
         /// <summary>
         /// Fade value between 0 and 1. it represent how close you camera is from the collider of the custom pass.  
