@@ -10054,7 +10054,7 @@ MonoBehaviour:
     PerPixelCorrectnessThreshold: 0.005
     AverageCorrectnessThreshold: 0.001
     UseHDR: 0
-  WaitFrames: 0
+  WaitFrames: 5
 --- !u!20 &1639866361
 Camera:
   m_ObjectHideFlags: 0
