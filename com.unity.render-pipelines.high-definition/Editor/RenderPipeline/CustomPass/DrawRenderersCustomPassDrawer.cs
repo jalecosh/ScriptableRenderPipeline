@@ -39,6 +39,7 @@ namespace UnityEditor.Rendering.HighDefinition
             public static GUIContent overrideMaterial = new GUIContent("Material", "Chose an override material, every renderer will be rendered with this material.");
             public static GUIContent overrideMaterialPass = new GUIContent("Pass Name", "The pass for the override material to use.");
             public static GUIContent sortingCriteria = new GUIContent("Sorting", "Sorting settings used to render objects in a certain order.");
+            public static GUIContent shaderPass = new GUIContent("Shader Pass", "Sets which pass will be used to render the materials. If the pass does not exists, the material will not be rendered.");
 
 		    //Depth Settings
 		    public static GUIContent overrideDepth = new GUIContent("Override Depth", "Override depth state of the objects rendered.");
@@ -73,6 +74,7 @@ namespace UnityEditor.Rendering.HighDefinition
         SerializedProperty      m_OverrideMaterial;
         SerializedProperty      m_OverrideMaterialPass;
         SerializedProperty      m_SortingCriteria;
+        SerializedProperty      m_ShaderPass;
         
         // Override depth state
         SerializedProperty      m_OverrideDepthState;
@@ -92,6 +94,7 @@ namespace UnityEditor.Rendering.HighDefinition
             m_RenderQueue = customPass.FindPropertyRelative("renderQueueType");
             m_LayerMask = customPass.FindPropertyRelative("layerMask");
             m_ShaderPasses = customPass.FindPropertyRelative("passNames");
+            m_ShaderPass = customPass.FindPropertyRelative("shaderPass");
 
             // Render options
             m_OverrideMaterial = customPass.FindPropertyRelative("overrideMaterial");
@@ -194,17 +197,21 @@ namespace UnityEditor.Rendering.HighDefinition
                     m_OverrideMaterialPass.intValue = mat.passCount - 1;
             }
 
+            rect.y += Styles.defaultLineSpace;
+            EditorGUI.indentLevel++;
             if (m_OverrideMaterial.objectReferenceValue)
             {
                 var mat = m_OverrideMaterial.objectReferenceValue as Material;
-                rect.y += Styles.defaultLineSpace;
-                EditorGUI.indentLevel++;
                 EditorGUI.BeginChangeCheck();
                 m_OverrideMaterialPass.intValue = EditorGUI.IntPopup(rect, Styles.overrideMaterialPass, m_OverrideMaterialPass.intValue, GetMaterialPassNames(mat), Enumerable.Range(0, mat.passCount).ToArray());
                 if (EditorGUI.EndChangeCheck())
                     m_OverrideMaterialPass.intValue = Mathf.Max(0, m_OverrideMaterialPass.intValue);
-                EditorGUI.indentLevel--;
             }
+            else
+            {
+                m_ShaderPass.intValue = (int)(DrawRenderersCustomPass.ShaderPass)EditorGUI.EnumPopup(rect, Styles.shaderPass, (DrawRenderersCustomPass.ShaderPass)m_ShaderPass.intValue);
+            }
+            EditorGUI.indentLevel--;
 
             rect.y += Styles.defaultLineSpace;
             m_OverrideDepthState.boolValue = EditorGUI.Toggle(rect, Styles.overrideDepth, m_OverrideDepthState.boolValue);
@@ -265,7 +272,7 @@ namespace UnityEditor.Rendering.HighDefinition
             height += Styles.defaultLineSpace; // add line for overrides dropdown
             if (m_RendererFoldout.boolValue)
             {
-                height += Styles.defaultLineSpace * (m_OverrideMaterial.objectReferenceValue != null ? m_MaterialLines : 1);
+                height += Styles.defaultLineSpace * m_MaterialLines;
                 height += Styles.defaultLineSpace * (m_OverrideDepthState.boolValue ? 3 : 1);
                 var mat = m_OverrideMaterial.objectReferenceValue as Material;
 
