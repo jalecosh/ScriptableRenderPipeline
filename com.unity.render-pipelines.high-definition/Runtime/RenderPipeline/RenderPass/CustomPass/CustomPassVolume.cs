@@ -79,7 +79,7 @@ namespace UnityEngine.Rendering.HighDefinition
             bool executed = false;
 
             // We never execute volume if the layer is not within the culling layers of the camera
-            if ((hdCamera.camera.cullingMask & gameObject.layer) == 0)
+            if ((hdCamera.camera.cullingMask & (1 << gameObject.layer)) == 0)
                 return false;
 
             Shader.SetGlobalFloat(HDShaderIDs._CustomPassInjectionPoint, (float)injectionPoint);

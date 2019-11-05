@@ -65,6 +65,7 @@ namespace UnityEngine.Rendering.HighDefinition
         {
             Camera,
             Custom,
+            None,
         }
 
         /// <summary>
@@ -112,7 +113,7 @@ namespace UnityEngine.Rendering.HighDefinition
             Execute(renderContext, cmd, hdCamera, cullingResult);
             isExecuting = false;
             
-            // Set back the camera color buffer is we were using a custom buffer as target
+            // Set back the camera color buffer if we were using a custom buffer as target
             if (targetDepthBuffer != TargetBuffer.Camera)
                 CoreUtils.SetRenderTarget(cmd, targets.cameraColorBuffer);
         }
@@ -144,13 +145,23 @@ namespace UnityEngine.Rendering.HighDefinition
         // This function must be only called from the ExecuteInternal method (requires current render target and current RT manager)
         void SetCustomPassTarget(CommandBuffer cmd)
         {
+            // In case all the buffer are set to none, we can't bind anything
+            if (targetColorBuffer == TargetBuffer.None && targetDepthBuffer == TargetBuffer.None)
+                return;
+
             bool msaa = IsMSAAEnabled(currentHDCamera);
             var cameraColorBuffer = msaa ? currentRenderTarget.cameraColorMSAABuffer : currentRenderTarget.cameraColorBuffer;
             var cameraDepthBuffer = currentRTManager.GetDepthStencilBuffer(msaa);
 
             RTHandle colorBuffer = (targetColorBuffer == TargetBuffer.Custom) ? currentRenderTarget.customColorBuffer : cameraColorBuffer;
             RTHandle depthBuffer = (targetDepthBuffer == TargetBuffer.Custom) ? currentRenderTarget.customDepthBuffer : cameraDepthBuffer;
-            CoreUtils.SetRenderTarget(cmd, colorBuffer, depthBuffer, clearFlags);
+
+            if (targetColorBuffer == TargetBuffer.None && targetDepthBuffer != TargetBuffer.None)
+                CoreUtils.SetRenderTarget(cmd, depthBuffer, clearFlags);
+            else if (targetColorBuffer != TargetBuffer.None && targetDepthBuffer == TargetBuffer.None)
+                CoreUtils.SetRenderTarget(cmd, colorBuffer, clearFlags);
+            else
+                CoreUtils.SetRenderTarget(cmd, colorBuffer, depthBuffer, clearFlags);
         }
         
         /// <summary>
