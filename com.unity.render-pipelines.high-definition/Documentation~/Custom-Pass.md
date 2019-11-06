@@ -23,6 +23,18 @@ Here you can see an example of a custom pass with a box collider (solid transpar
 
 > **NOTE**: You can stack multiple custom pass volumes but only one per injection point can be executed, the one that will be executed is the smallest currently overlapping collider extent (without the fade radius). It means that global volumes are lower priority than local ones.
 
+## Injection Points
+
+Custom passes can be injected at 6 different places. Note that these injection points **don't tell you exactly where you pass will be executed**, the only warranty we give is that a certain list of buffer will be available for **Read** or **Write** and will containing a certain subset of objects rendered before your pass. Unlike Universal, we don't give you the warranty that your passes will be executed before or after any HDRP internal operation (also due to our async rendering). However we guarantee that the injection points will be triggered from top to bottom in this order in a frame:
+Name | Available Buffers | Description
+--- | --- | ---
+BeforeRendering | Depth (Write) | Just after the depth clear, you can write to the depth buffer so Z-Tested opaque objects won't be rendered. It's useful to mask a part of the rendering. Here you can also clear the buffer you allocated or the `Custom Buffer`
+AfterOpaqueDepthAndNormal | Depth (Read \| Write), Normal (Read \| Write) | Buffers will contain all opaque objects. Here you can modify the normal and depth buffer, it will be taken in account in the lighting and the depth pyramid.
+BeforePreRefraction | Color (no pyramid \| Read \| Write), Depth (Read \| Write), Normal (Read) | Buffer will contains all opaque objects. Use this pass to render any transparent objects that you want to be in the color pyramid (and in the refraction).
+BeforeTransparent | Color (Pyramid \| Read \| Write), Depth (Read \| Write), Normal (Read) | Here you can sample the color pyramid. It's useful to do some blur effects but note that all objects rendered at this point won't be in the color pyramid. You can also draw some transparent objects here that needs to refract the scene.
+BeforePostProcess | Color (Pyramid \| Read \| Write), Depth (Read \| Write), Normal (Read) | Buffers contains all objects in the frame in HDR.
+AfterPostProcess | Color(Read \| Write), Depth (Read) | Buffers are in after post process mode, it means that the depth is jittered (So you can't draw depth tested objects without having artifacts).
+
 ## Custom Pass List
 
 The main part of the **Custom Pass Volume** component is the **Custom Passes** reorderable list, it allow you to add new custom pass effects and configure then. There are two custom passes that are builtin to HDRP, the FullScreen and the DrawRenderers custom pass.  
@@ -198,6 +210,9 @@ To code your custom pass, you have three entry point:
 - `Execute` is where you'll write everything you need to be rendered during the pass.
 
 In the `Setup` and `Execute` functions, we gives you access to the [ScriptableRenderContext](https://docs.unity3d.com/2019.3/Documentation/ScriptReference/Rendering.ScriptableRenderContext.html) and a [CommandBuffer](https://docs.unity3d.com/2019.3/Documentation/ScriptReference/Rendering.CommandBuffer.html), these two classes contains everything you need to render pretty much everything but here we will focus on these two functions [ScriptableRenderContext.DrawRenderers](https://docs.unity3d.com/2019.3/Documentation/ScriptReference/Rendering.ScriptableRenderContext.DrawRenderers.html) and [CommandBuffer.DrawProcedural](https://docs.unity3d.com/2019.3/Documentation/ScriptReference/Rendering.CommandBuffer.DrawProcedural.html).
+
+> **Important:** if the a is never referenced in any of your scenes it won't get built and the effect will not work when running the game outside of the editor. Either add it to a [Resources folder](https://docs.unity3d.com/Manual/LoadingResourcesatRuntime.html) or put it in the **Always Included Shaders** list in `Edit -> Project Settings -> Graphics`. Be careful with this especially if you load shaders using `Shader.Find()` otherwise, you'll end up with a black screen.
+
 
 > **Pro Tips:**  
 > - To allocate a render target buffer that works in every situation (VR, camera resize, ...), use the RTHandles system like so:
