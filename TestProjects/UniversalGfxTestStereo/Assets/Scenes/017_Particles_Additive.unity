@@ -10125,12 +10125,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   particleSystems:
-  - {fileID: 0}
   - {fileID: 187483399}
   - {fileID: 311618322}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   simPoint: 0.8
 --- !u!114 &1639866364
 MonoBehaviour:

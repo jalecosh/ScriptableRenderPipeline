@@ -439,4 +439,4 @@ MonoBehaviour:
     PerPixelCorrectnessThreshold: 0.001
     AverageCorrectnessThreshold: 0.005
     UseHDR: 0
-  WaitFrames: 1
+  WaitFrames: 5

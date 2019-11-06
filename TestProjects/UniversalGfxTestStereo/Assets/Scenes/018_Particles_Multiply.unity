@@ -32,7 +32,7 @@ RenderSettings:
   m_FlareFadeSpeed: 3
   m_HaloTexture: {fileID: 0}
   m_SpotCookie: {fileID: 10001, guid: 0000000000000000e000000000000000, type: 0}
-  m_DefaultReflectionMode: 0
+  m_DefaultReflectionMode: 1
   m_DefaultReflectionResolution: 128
   m_ReflectionBounces: 1
   m_ReflectionIntensity: 1
@@ -9756,7 +9756,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1639866362}
   - component: {fileID: 1639866361}
-  - component: {fileID: 1639866359}
   - component: {fileID: 1639866358}
   - component: {fileID: 1639866363}
   - component: {fileID: 1639866360}
@@ -9770,14 +9769,6 @@ GameObject:
   m_IsActive: 1
 --- !u!81 &1639866358
 AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1639866357}
-  m_Enabled: 1
---- !u!124 &1639866359
-Behaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -9873,12 +9864,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   particleSystems:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   - {fileID: 1295003158}
   - {fileID: 1234559388}
-  - {fileID: 0}
   simPoint: 0.8
 --- !u!114 &1639866364
 MonoBehaviour:

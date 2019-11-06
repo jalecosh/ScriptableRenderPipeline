@@ -5062,11 +5062,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   particleSystems:
   - {fileID: 1195103817}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   simPoint: 0.8
 --- !u!114 &1639866364
 MonoBehaviour:
@@ -5090,7 +5085,7 @@ MonoBehaviour:
   m_VolumeLayerMask:
     serializedVersion: 2
     m_Bits: 1
-  m_VolumeTrigger: {fileID: 0}
+  m_VolumeTrigger: {fileID: 1639866362}
   m_RenderPostProcessing: 0
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
