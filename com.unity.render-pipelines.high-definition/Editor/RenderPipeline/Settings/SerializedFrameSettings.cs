@@ -96,16 +96,22 @@ namespace UnityEditor.Rendering.HighDefinition
 
         public struct TitleDrawingScope : IDisposable
         {
+            bool hasOverride;
+
             public TitleDrawingScope(UnityEngine.Rect rect, UnityEngine.GUIContent label, SerializedFrameSettings serialized)
             {
                 EditorGUI.BeginProperty(rect, label, serialized.root);
-                EditorGUI.BeginProperty(rect, label, serialized.overrides);
+
+                hasOverride = serialized.overrides != null;
+                if (hasOverride)
+                    EditorGUI.BeginProperty(rect, label, serialized.overrides);
             }
 
             void IDisposable.Dispose()
             {
                 EditorGUI.EndProperty();
-                EditorGUI.EndProperty();
+                if (hasOverride)
+                    EditorGUI.EndProperty();
             }
         }
     }
