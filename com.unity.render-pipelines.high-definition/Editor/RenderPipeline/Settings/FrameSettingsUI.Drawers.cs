@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using UnityEngine.Rendering.HighDefinition;
-using UnityEngine.Rendering;
 using UnityEditor.Rendering;
 using Utilities;
 
@@ -48,9 +47,6 @@ namespace UnityEditor.Rendering.HighDefinition
 
     partial class FrameSettingsUI
     {
-
-
-
         enum Expandable
         {
             RenderingPasses = 1 << 0,
@@ -62,15 +58,38 @@ namespace UnityEditor.Rendering.HighDefinition
 
         readonly static ExpandedState<Expandable, FrameSettings> k_ExpandedState = new ExpandedState<Expandable, FrameSettings>(~(-1), "HDRP");
 
+        static float beginTmp;
         internal static CED.IDrawer Inspector(bool withOverride = true) => CED.Group(
                 CED.Group((serialized, owner) =>
                 {
                     EditorGUILayout.BeginVertical("box");
-                    EditorGUILayout.LabelField(FrameSettingsUI.frameSettingsHeaderContent, EditorStyles.boldLabel);
+
+                    Rect rect = GUILayoutUtility.GetRect(1, EditorGUIUtility.singleLineHeight);
+                    beginTmp = rect.y - 5; //5 is from style box
+
+                    // Add dedicated scope here and on each FrameSettings field to have the contextual menu on everything
+                    using (new SerializedFrameSettings.TitleDrawingScope(rect, FrameSettingsUI.frameSettingsHeaderContent, serialized))
+                    {
+                        EditorGUI.LabelField(rect, FrameSettingsUI.frameSettingsHeaderContent, EditorStyles.boldLabel);
+                    }
                 }),
                 InspectorInnerbox(withOverride),
-                CED.Group((serialized, owner) => EditorGUILayout.EndVertical())
-                );
+                CED.Group((serialized, owner) =>
+                {
+                    float end = GUILayoutUtility.GetLastRect().yMax + 3; //3 is from style box
+                    Rect globalOverrideRect = new Rect(0, end, 500, beginTmp - end);
+                    using (new SerializedFrameSettings.TitleDrawingScope(globalOverrideRect, FrameSettingsUI.frameSettingsHeaderContent, serialized))
+                    {
+                        //Nothing to draw.
+                        //We just want to have a big blue bar at left that match the whole framesetting box.
+                        //This is because framesettings will be considered as one bg block from prefab point
+                        //of view as there is no way to separate it bit per bit in serialization and Prefab
+                        //override API rely on SerializedProperty.
+                    }
+
+                    EditorGUILayout.EndVertical();
+                })
+            );
 
         //separated to add enum popup on default frame settings
         internal static CED.IDrawer InspectorInnerbox(bool withOverride = true) => CED.Group(
