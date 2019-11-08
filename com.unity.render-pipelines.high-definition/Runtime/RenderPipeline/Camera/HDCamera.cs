@@ -256,6 +256,13 @@ namespace UnityEngine.Rendering.HighDefinition
             return antialiasing == AntialiasingMode.TemporalAntialiasing;
         }
 
+        public bool IsVolumetricReprojectionEnabled()
+        {
+            return Application.isPlaying && camera.cameraType == CameraType.Game &&
+                   frameSettings.IsEnabled(FrameSettingsField.Volumetrics) &&
+                   frameSettings.IsEnabled(FrameSettingsField.ReprojectionForVolumetrics);
+        }
+
         // Pass all the systems that may want to update per-camera data here.
         // That way you will never update an HDCamera and forget to update the dependent system.
         // NOTE: This function must be called only once per rendering (not frame, as a single camera can be rendered multiple times with different parameters during the same frame)
@@ -275,7 +282,7 @@ namespace UnityEngine.Rendering.HighDefinition
             {
                 bool isCurrentColorPyramidRequired = m_frameSettings.IsEnabled(FrameSettingsField.RoughRefraction) || m_frameSettings.IsEnabled(FrameSettingsField.Distortion);
                 bool isHistoryColorPyramidRequired = m_frameSettings.IsEnabled(FrameSettingsField.SSR) || antialiasing == AntialiasingMode.TemporalAntialiasing;
-                bool isVolumetricHistoryRequired = m_frameSettings.IsEnabled(FrameSettingsField.Volumetrics) && m_frameSettings.IsEnabled(FrameSettingsField.ReprojectionForVolumetrics);
+                bool isVolumetricHistoryRequired   = IsVolumetricReprojectionEnabled();
 
                 int numColorPyramidBuffersRequired = 0;
                 if (isCurrentColorPyramidRequired)

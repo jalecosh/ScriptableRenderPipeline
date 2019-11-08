@@ -443,12 +443,6 @@ namespace UnityEngine.Rendering.HighDefinition
             return (3.0f / (8.0f * Mathf.PI)) * (1.0f - g * g) / (2.0f + g * g);
         }
 
-        static bool IsReprojectionEnabled(HDCamera hdCamera)
-        {
-            return Application.isPlaying && hdCamera.camera.cameraType == CameraType.Game &&
-                   hdCamera.frameSettings.IsEnabled(FrameSettingsField.ReprojectionForVolumetrics);
-        }
-
         void PushVolumetricLightingGlobalParams(HDCamera hdCamera, CommandBuffer cmd, int frameIndex)
         {
             if (!Fog.IsVolumetricLightingEnabled(hdCamera))
@@ -480,7 +474,7 @@ namespace UnityEngine.Rendering.HighDefinition
 
             Vector2Int historyBufferSize = Vector2Int.zero;
 
-            if (IsReprojectionEnabled(hdCamera))
+            if (hdCamera.IsVolumetricReprojectionEnabled())
             {
                 var historyRT = hdCamera.GetPreviousFrameRT((int)HDCameraFrameHistoryType.VolumetricLighting);
 
@@ -729,7 +723,7 @@ namespace UnityEngine.Rendering.HighDefinition
 
             // Only available in the Play Mode because all the frame counters in the Edit Mode are broken.
             parameters.tiledLighting = hdCamera.frameSettings.IsEnabled(FrameSettingsField.BigTilePrepass);
-            parameters.enableReprojection = IsReprojectionEnabled(hdCamera);
+            parameters.enableReprojection = hdCamera.IsVolumetricReprojectionEnabled();
             bool enableAnisotropy = fog.anisotropy.value != 0;
             bool highQuality = volumetricLightingPreset == VolumetricLightingPreset.High;
 
