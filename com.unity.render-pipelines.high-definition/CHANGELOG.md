@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added Disc area light (bake only)
 - Added a warning in the material UI to prevent transparent + subsurface-scattering combination.
 - Added XR single-pass setting into HDRP asset
+- Added support for depth copy with XR SDK
+- Added debug setting to Render Pipeline Window to list the active XR views
 
 ### Fixed
 - Sorting, undo, labels, layout in the Lighting Explorer.
@@ -127,6 +129,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed EOL for some files
 - Fixed scene view rendering with volumetrics and XR enabled
 - Fixed decals to work with multiple cameras
+- Fixed y-flip in scene view with XR SDK
 
 ### Changed
 - Color buffer pyramid is not allocated anymore if neither refraction nor distortion are enabled
