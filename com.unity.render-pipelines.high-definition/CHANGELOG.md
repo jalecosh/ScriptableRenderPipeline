@@ -25,7 +25,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added a warning in the material UI to prevent transparent + subsurface-scattering combination.
 - Added XR single-pass setting into HDRP asset
 - Added support for depth copy with XR SDK
-- Added debug setting to Render Pipeline Window to list the active XR views
+- Added debug setting to Render Pipeline Debug Window to list the active XR views
+- Add XR single-pass test mode to Render Pipeline Debug Window
 
 ### Fixed
 - Sorting, undo, labels, layout in the Lighting Explorer.
@@ -154,6 +155,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Tweak test asset to be compatible with XR: unlit SG material for canvas and double-side font material
 - Slightly tweaked the behaviour of bloom when resolution is low to reduce artifacts.
 - Hidden fields in Light Inspector that is not relevant while in BakingOnly mode.
+- Reworked XR automated tests
 
 ## [7.1.1] - 2019-09-05
 
