@@ -114,7 +114,7 @@ namespace UnityEngine.Rendering.HighDefinition
                 ReleaseFrame();
             }
 
-            if (testModeEnabled && (singlePassTestModeActive || automatedTestRunning))
+            if ((singlePassTestModeActive || automatedTestRunning) && testModeEnabled)
                 SetCustomLayout(LayoutSinglePassTestMode);
             else
                 SetCustomLayout(null);
