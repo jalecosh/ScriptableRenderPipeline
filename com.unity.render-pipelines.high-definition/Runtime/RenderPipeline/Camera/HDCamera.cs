@@ -367,9 +367,9 @@ namespace UnityEngine.Rendering.HighDefinition
         {
             RTHandles.SetReferenceSize(m_ActualWidth, m_ActualHeight, m_msaaSamples);
 
-            bool resized = m_HistoryRTSystem.SwapAndSetReferenceSize(m_ActualWidth, m_ActualHeight, m_msaaSamples);
+            bool reallocated = m_HistoryRTSystem.SwapAndSetReferenceSize(m_ActualWidth, m_ActualHeight, m_msaaSamples);
 
-            if (resized)
+            if (reallocated)
             {
                 // Invaldate history buffers.
                 colorPyramidHistoryIsValid = false;

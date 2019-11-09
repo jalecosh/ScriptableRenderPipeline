@@ -93,9 +93,9 @@ namespace UnityEngine.Rendering
             bool sizeChanged = width > GetMaxWidth() || height > GetMaxHeight();
             bool msaaSamplesChanged = (msaaSamples != m_ScaledRTCurrentMSAASamples);
 
-            bool doResize = sizeChanged || msaaSamplesChanged;
+            bool reallocate = sizeChanged || msaaSamplesChanged;
 
-            if (sizeChanged || msaaSamplesChanged)
+            if (reallocate)
             {
                 Resize(width, height, msaaSamples, sizeChanged, msaaSamplesChanged);
             }
@@ -115,7 +115,7 @@ namespace UnityEngine.Rendering
                 m_RTHandleProperties.rtHandleScale = new Vector4(scaleCurrent.x, scaleCurrent.y, scalePrevious.x, scalePrevious.y);
             }
 
-            return doResize;
+            return reallocate;
         }
 
         public void SetHardwareDynamicResolutionState(bool enableHWDynamicRes)

@@ -115,8 +115,7 @@ namespace UnityEngine.Rendering
         /// <param name="width">The width of the RTs of this buffer.</param>
         /// <param name="height">The height of the RTs of this buffer.</param>
         /// <param name="msaaSamples">Number of MSAA samples for this buffer.</param>
-        /// <returns> 'true' if the buffer has been resized, false otherwise.</returns>
-
+        /// <returns> 'true' if the buffer has been reallocated, false otherwise.</returns>
         public bool SwapAndSetReferenceSize(int width, int height, MSAASamples msaaSamples)
         {
             Swap();
