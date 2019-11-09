@@ -148,6 +148,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Tweak test asset to be compatible with XR: unlit SG material for canvas and double-side font material
 - Slightly tweaked the behaviour of bloom when resolution is low to reduce artifacts.
 - Hidden fields in Light Inspector that is not relevant while in BakingOnly mode.
+- Improve history buffer management
 
 ## [7.1.1] - 2019-09-05
 
