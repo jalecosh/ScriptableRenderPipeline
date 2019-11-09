@@ -366,7 +366,15 @@ namespace UnityEngine.Rendering.HighDefinition
         public void BeginRender()
         {
             RTHandles.SetReferenceSize(m_ActualWidth, m_ActualHeight, m_msaaSamples);
-            m_HistoryRTSystem.SwapAndSetReferenceSize(m_ActualWidth, m_ActualHeight, m_msaaSamples);
+
+            bool resized = m_HistoryRTSystem.SwapAndSetReferenceSize(m_ActualWidth, m_ActualHeight, m_msaaSamples);
+
+            if (resized)
+            {
+                // Invaldate history buffers.
+                colorPyramidHistoryIsValid = false;
+                volumetricHistoryIsValid   = false;
+            }
 
             m_RecorderCaptureActions = CameraCaptureBridge.GetCaptureActions(camera);
         }

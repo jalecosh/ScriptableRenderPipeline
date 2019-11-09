@@ -81,7 +81,7 @@ namespace UnityEngine.Rendering
             m_AutoSizedRTs.Remove(rth);
         }
 
-        public void SetReferenceSize(int width, int height, MSAASamples msaaSamples)
+        public bool SetReferenceSize(int width, int height, MSAASamples msaaSamples)
         {
             m_RTHandleProperties.previousViewportSize = m_RTHandleProperties.currentViewportSize;
             m_RTHandleProperties.previousRenderTargetSize = m_RTHandleProperties.currentRenderTargetSize;
@@ -92,6 +92,8 @@ namespace UnityEngine.Rendering
 
             bool sizeChanged = width > GetMaxWidth() || height > GetMaxHeight();
             bool msaaSamplesChanged = (msaaSamples != m_ScaledRTCurrentMSAASamples);
+
+            bool doResize = sizeChanged || msaaSamplesChanged;
 
             if (sizeChanged || msaaSamplesChanged)
             {
@@ -112,6 +114,8 @@ namespace UnityEngine.Rendering
                 Vector2 scalePrevious = m_RTHandleProperties.previousViewportSize / lastFrameMaxSize;
                 m_RTHandleProperties.rtHandleScale = new Vector4(scaleCurrent.x, scaleCurrent.y, scalePrevious.x, scalePrevious.y);
             }
+
+            return doResize;
         }
 
         public void SetHardwareDynamicResolutionState(bool enableHWDynamicRes)
