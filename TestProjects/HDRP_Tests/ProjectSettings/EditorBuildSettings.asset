@@ -377,13 +377,13 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/GraphicTests/Scenes/4x_PostProcessing/4071_PhysicalCamera-Aperture-bladeCount.unity
     guid: 842b41a0b734f7744870a951a35f6d9e
-  - enabled: 1
+  - enabled: 0
     path: Assets/GraphicTests/Scenes/4x_PostProcessing/4072_PhysicalCamera-Aperture-curvature.unity
     guid: a7cd68611a456484baf555290cba8d67
-  - enabled: 1
+  - enabled: 0
     path: Assets/GraphicTests/Scenes/4x_PostProcessing/4073_PhysicalCamera-Aperture-barrelClipping.unity
     guid: eb4329adb36623e4a8aa4f0a72b36203
-  - enabled: 1
+  - enabled: 0
     path: Assets/GraphicTests/Scenes/4x_PostProcessing/4074_PhysicalCamera-Aperture-anamorphism.unity
     guid: 9a927a8eae77a07438f6e55cb7c03820
   - enabled: 1
