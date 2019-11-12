@@ -374,7 +374,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/GraphicTests/Scenes/4x_PostProcessing/4070_PhysicalCamera-iso-aperture-shutter.unity
     guid: cc0be4a72d37601449a16c2d168ac449
-  - enabled: 1
+  - enabled: 0
     path: Assets/GraphicTests/Scenes/4x_PostProcessing/4071_PhysicalCamera-Aperture-bladeCount.unity
     guid: 842b41a0b734f7744870a951a35f6d9e
   - enabled: 1
