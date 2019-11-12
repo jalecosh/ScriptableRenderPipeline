@@ -463,7 +463,7 @@ namespace UnityEngine.Rendering.HighDefinition
             // The history & feedback buffers are specific to the camera.
             // These 2 types of buffers can have different sizes.
             // Additionally, history buffers can have different sizes, since they are not resized at the same time
-            // (every frame, we resize the feedback buffer but not the history buffer, and then we swap them).
+            // (every frame, we swap the buffers, and resize the feedback buffer but not the history buffer).
             // The viewport size is the same for all of these buffers.
             // All of these buffers may have sub-native-resolution viewports.
             // The 3rd dimension (number of slices) is the same for all of these buffers.
