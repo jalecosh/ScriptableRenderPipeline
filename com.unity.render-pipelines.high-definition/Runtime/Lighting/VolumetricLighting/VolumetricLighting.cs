@@ -799,14 +799,10 @@ namespace UnityEngine.Rendering.HighDefinition
             {
                 var parameters = PrepareVolumetricLightingParameters(hdCamera, frameIndex);
 
-                RTHandle historyRT  = null;
-                RTHandle feedbackRT = null;
-
-                if (parameters.enableReprojection)
-                {
-                    historyRT  = hdCamera.GetPreviousFrameRT((int)HDCameraFrameHistoryType.VolumetricLighting);
-                    feedbackRT = hdCamera.GetCurrentFrameRT((int)HDCameraFrameHistoryType.VolumetricLighting);
-                }
+                // It is safe to request these RTs even if they have not been allocated.
+                // The system will return NULL in that case.
+                RTHandle historyRT  = hdCamera.GetPreviousFrameRT((int)HDCameraFrameHistoryType.VolumetricLighting);
+                RTHandle feedbackRT = hdCamera.GetCurrentFrameRT((int)HDCameraFrameHistoryType.VolumetricLighting);
 
                 VolumetricLightingPass(parameters, m_DensityBufferHandle, m_LightingBufferHandle, historyRT, feedbackRT, m_TileAndClusterData.bigTileLightList, cmd);
 
