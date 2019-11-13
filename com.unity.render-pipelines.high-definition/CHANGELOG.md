@@ -24,10 +24,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added Disc area light (bake only)
 - Added a warning in the material UI to prevent transparent + subsurface-scattering combination.
 - Added XR single-pass setting into HDRP asset
+- Added a penumbra tint option for lights
 - Added support for depth copy with XR SDK
 - Added debug setting to Render Pipeline Debug Window to list the active XR views
 - Add XR single-pass test mode to Render Pipeline Debug Window
-- Added a penumbra tint option for lights
 
 ### Fixed
 - Sorting, undo, labels, layout in the Lighting Explorer.
