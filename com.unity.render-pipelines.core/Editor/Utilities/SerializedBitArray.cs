@@ -33,7 +33,7 @@ namespace UnityEditor.Rendering
             uint capacity;
             if (type.StartsWith(baseTypeName) && uint.TryParse(type.Substring(baseTypeName.Length), out capacity))
                 return capacity;
-            throw new ArgumentException("Trying to call Get on unknown BitArray");
+            throw new ArgumentException("Trying to call GetBitArrayCapacity on unknown BitArray");
         }
 
         public static bool GetBitArrayAt(this SerializedProperty property, uint bitIndex)
@@ -53,7 +53,7 @@ namespace UnityEditor.Rendering
                     case 256u: return Get256OnOneBitArray(property, bitIndex);
                 }
             }
-            throw new ArgumentException("Trying to call Get on unknown BitArray");
+            throw new ArgumentException("Trying to call GetBitArrayAt on unknown BitArray");
         }
 
         public static void SetBitArrayAt(this SerializedProperty property, uint bitIndex, bool value)
@@ -103,7 +103,7 @@ namespace UnityEditor.Rendering
                             case 128u:  Set128OnOneBitArray(isolatedProperty, bitIndex, value); break;
                             case 256u:  Set256OnOneBitArray(isolatedProperty, bitIndex, value); break;
                             default:
-                                throw new ArgumentException("Trying to call Get on unknown BitArray");
+                                throw new ArgumentException("Trying to call SetBitArrayAt on unknown BitArray");
                         }
                     }
                     
@@ -144,7 +144,7 @@ namespace UnityEditor.Rendering
                                 : HasBitArrayMultipleDifferentValue64(property.FindPropertyRelative("data4"), bitIndex - 192u);
                 }
             }
-            throw new ArgumentException("Trying to call Get on unknown BitArray");
+            throw new ArgumentException("Trying to call HasBitArrayMultipleDifferentValue on unknown BitArray");
         }
 
         static bool HasBitArrayMultipleDifferentValue64(SerializedProperty property, uint bitIndex)
