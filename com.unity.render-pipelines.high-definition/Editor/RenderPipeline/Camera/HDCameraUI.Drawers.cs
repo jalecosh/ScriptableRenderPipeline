@@ -204,7 +204,8 @@ namespace UnityEditor.Rendering.HighDefinition
 
             var cam = p.baseCameraSettings;
 
-            Rect perspectiveRect = GUILayoutUtility.GetRect(1, EditorGUIUtility.singleLineHeight);
+            Rect perspectiveRect = EditorGUILayout.GetControlRect();
+
             ProjectionType projectionType;
             EditorGUI.BeginProperty(perspectiveRect, projectionContent, cam.orthographic);
             {
@@ -231,6 +232,7 @@ namespace UnityEditor.Rendering.HighDefinition
                 bool isPhysicalCamera = p.projectionMatrixMode.intValue == (int)ProjectionMatrixMode.PhysicalPropertiesBased;
 
                 var rect = EditorGUILayout.GetControlRect();
+
                 var guiContent = EditorGUI.BeginProperty(rect, FOVAxisModeContent, cam.fovAxisMode);
                 EditorGUI.showMixedValue = cam.fovAxisMode.hasMultipleDifferentValues;
 
@@ -326,8 +328,8 @@ namespace UnityEditor.Rendering.HighDefinition
                 const int k_LabelFieldSeparator = 2;
                 float indentOffset = EditorGUI.indentLevel * k_OffsetPerIndent;
                 int oldIndentLevel = EditorGUI.indentLevel;
-
-                var lineRect = GUILayoutUtility.GetRect(1, EditorGUIUtility.singleLineHeight);
+                
+                var lineRect = EditorGUILayout.GetControlRect();
                 var labelRect = new Rect(lineRect.x, lineRect.y, EditorGUIUtility.labelWidth, lineRect.height);
                 var fieldRect = new Rect(labelRect.xMax + k_LabelFieldSeparator, lineRect.y, lineRect.width - labelRect.width - k_UnitMenuWidth - k_LabelFieldSeparator * 2, lineRect.height);
                 var unitMenu = new Rect(fieldRect.xMax + k_LabelFieldSeparator, lineRect.y, k_UnitMenuWidth, lineRect.height);
@@ -408,7 +410,7 @@ namespace UnityEditor.Rendering.HighDefinition
                     const int kFloatFieldWidth = 50;
                     const int kSeparatorWidth = 5;
                     float indentOffset = EditorGUI.indentLevel * 15f;
-                    var lineRect = GUILayoutUtility.GetRect(1, EditorGUIUtility.singleLineHeight);
+                    var lineRect = EditorGUILayout.GetControlRect();
                     var labelRect = new Rect(lineRect.x, lineRect.y, EditorGUIUtility.labelWidth - indentOffset, lineRect.height);
                     var floatFieldLeft = new Rect(labelRect.xMax, lineRect.y, kFloatFieldWidth + indentOffset, lineRect.height);
                     var sliderRect = new Rect(floatFieldLeft.xMax + kSeparatorWidth - indentOffset, lineRect.y, lineRect.width - labelRect.width - kFloatFieldWidth * 2 - kSeparatorWidth * 2, lineRect.height);
@@ -449,7 +451,7 @@ namespace UnityEditor.Rendering.HighDefinition
 
         static void Drawer_Antialiasing(SerializedHDCamera p, Editor owner)
         {
-            Rect antiAliasingRect = GUILayoutUtility.GetRect(1, EditorGUIUtility.singleLineHeight);
+            Rect antiAliasingRect = EditorGUILayout.GetControlRect();
             EditorGUI.BeginProperty(antiAliasingRect, antialiasingContent, p.antialiasing);
             {
                 EditorGUI.BeginChangeCheck();
