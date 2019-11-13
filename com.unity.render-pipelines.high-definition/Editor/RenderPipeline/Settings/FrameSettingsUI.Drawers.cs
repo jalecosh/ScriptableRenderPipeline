@@ -58,16 +58,14 @@ namespace UnityEditor.Rendering.HighDefinition
 
         readonly static ExpandedState<Expandable, FrameSettings> k_ExpandedState = new ExpandedState<Expandable, FrameSettings>(~(-1), "HDRP");
 
-        static float beginTmp;
+        static Rect lastBoxRect;
         internal static CED.IDrawer Inspector(bool withOverride = true) => CED.Group(
                 CED.Group((serialized, owner) =>
                 {
-                    EditorGUILayout.BeginVertical("box");
-
-                    Rect rect = GUILayoutUtility.GetRect(1, EditorGUIUtility.singleLineHeight);
-                    beginTmp = rect.y - 5; //5 is from style box
-
+                    lastBoxRect = EditorGUILayout.BeginVertical("box");
+                    
                     // Add dedicated scope here and on each FrameSettings field to have the contextual menu on everything
+                    Rect rect = GUILayoutUtility.GetRect(1, EditorGUIUtility.singleLineHeight);
                     using (new SerializedFrameSettings.TitleDrawingScope(rect, FrameSettingsUI.frameSettingsHeaderContent, serialized))
                     {
                         EditorGUI.LabelField(rect, FrameSettingsUI.frameSettingsHeaderContent, EditorStyles.boldLabel);
@@ -76,9 +74,8 @@ namespace UnityEditor.Rendering.HighDefinition
                 InspectorInnerbox(withOverride),
                 CED.Group((serialized, owner) =>
                 {
-                    float end = GUILayoutUtility.GetLastRect().yMax + 3; //3 is from style box
-                    Rect globalOverrideRect = new Rect(0, end, 500, beginTmp - end);
-                    using (new SerializedFrameSettings.TitleDrawingScope(globalOverrideRect, FrameSettingsUI.frameSettingsHeaderContent, serialized))
+                    EditorGUILayout.EndVertical();
+                    using (new SerializedFrameSettings.TitleDrawingScope(lastBoxRect, FrameSettingsUI.frameSettingsHeaderContent, serialized))
                     {
                         //Nothing to draw.
                         //We just want to have a big blue bar at left that match the whole framesetting box.
@@ -86,8 +83,6 @@ namespace UnityEditor.Rendering.HighDefinition
                         //of view as there is no way to separate it bit per bit in serialization and Prefab
                         //override API rely on SerializedProperty.
                     }
-
-                    EditorGUILayout.EndVertical();
                 })
             );
 
