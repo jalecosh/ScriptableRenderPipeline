@@ -262,7 +262,7 @@ EditorBuildSettings:
     guid: 5246b0356ec7dbf4aa0a3afc6b27b122
   - enabled: 1
     path: Assets/GraphicTests/Scenes/2x_Lighting/2316_ShadowTint.unity
-    guid: bdba4e77a656ff546827f067d31f7103
+    guid: 38bf5f36b115bbe4394bb54bd90584ca
   - enabled: 1
     path: Assets/GraphicTests/Scenes/2x_Lighting/2401_Area_Light_Meshes.unity
     guid: 359ded33a047fd540b5e19a98547f5e2
