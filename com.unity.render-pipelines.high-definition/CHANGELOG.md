@@ -133,6 +133,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed HDRP samples file hierarchy
 - Fixed Light units not matching light type
 - Fixed QualitySettings panel not displaying HDRP Asset
+- Fixed resources load issue while upgrading HDRP package.
 
 ### Changed
 - Color buffer pyramid is not allocated anymore if neither refraction nor distortion are enabled
