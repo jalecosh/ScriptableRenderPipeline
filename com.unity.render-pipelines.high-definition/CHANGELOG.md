@@ -164,6 +164,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Moved the copy of the geometry history buffers to right after the depth mip chain generation.
 - Rename "Luminance" to "Nits" in UX for physical light unit
 - Rename FrameSettings "SkyLighting" to "SkyReflection"
+- The ray traced screen space shadow history for directional, spot and point lights is discarded if the light transform has changed.
 
 ## [7.1.1] - 2019-09-05
 
