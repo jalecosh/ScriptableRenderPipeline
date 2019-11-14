@@ -137,6 +137,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed QualitySettings panel not displaying HDRP Asset
 - Fixed y-flip in scene view with XR SDK
 - Fixed Decal projectors do not immediately respond when parent object layer mask is changed in editor.
+- Fixed the transparent Cull Mode option in HD unlit master node settings only visible if double sided is ticked.
 
 ### Changed
 - Color buffer pyramid is not allocated anymore if neither refraction nor distortion are enabled
