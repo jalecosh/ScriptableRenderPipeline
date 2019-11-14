@@ -222,9 +222,9 @@ namespace UnityEditor.Rendering.HighDefinition
 
             GraphicsSettings.renderPipelineAsset = hdrpAsset;
             if (!IsHdrpAssetRuntimeResourcesCorrect())
-                FixHdrpAssetRuntimeResources();
+                FixHdrpAssetRuntimeResources(true);
             if (!IsHdrpAssetEditorResourcesCorrect())
-                FixHdrpAssetEditorResources();
+                FixHdrpAssetEditorResources(true);
 
             CreateDefaultSceneFromPackageAnsAssignIt(forDXR: false);
         }
