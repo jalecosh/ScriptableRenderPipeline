@@ -89,8 +89,8 @@ namespace UnityEngine.Rendering.HighDefinition
         {
             public RTHandle cameraColorMSAABuffer;
             public RTHandle cameraColorBuffer;
-            public RTHandle customColorBuffer;
-            public RTHandle customDepthBuffer;
+            public Lazy<RTHandle> customColorBuffer;
+            public Lazy<RTHandle> customDepthBuffer;
         }
 
         enum Version
@@ -161,8 +161,8 @@ namespace UnityEngine.Rendering.HighDefinition
             var cameraColorBuffer = msaa ? currentRenderTarget.cameraColorMSAABuffer : currentRenderTarget.cameraColorBuffer;
             var cameraDepthBuffer = currentRTManager.GetDepthStencilBuffer(msaa);
 
-            RTHandle colorBuffer = (targetColorBuffer == TargetBuffer.Custom) ? currentRenderTarget.customColorBuffer : cameraColorBuffer;
-            RTHandle depthBuffer = (targetDepthBuffer == TargetBuffer.Custom) ? currentRenderTarget.customDepthBuffer : cameraDepthBuffer;
+            RTHandle colorBuffer = (targetColorBuffer == TargetBuffer.Custom) ? currentRenderTarget.customColorBuffer.Value : cameraColorBuffer;
+            RTHandle depthBuffer = (targetDepthBuffer == TargetBuffer.Custom) ? currentRenderTarget.customDepthBuffer.Value : cameraDepthBuffer;
             CoreUtils.SetRenderTarget(cmd, colorBuffer, depthBuffer, clearFlags);
         }
         
@@ -226,9 +226,9 @@ namespace UnityEngine.Rendering.HighDefinition
                 throw new Exception("SetCameraRenderTarget can only be called inside the CustomPass.Execute function");
 
             if (bindDepth)
-                CoreUtils.SetRenderTarget(cmd, currentRenderTarget.customColorBuffer, currentRenderTarget.customDepthBuffer, clearFlags);
+                CoreUtils.SetRenderTarget(cmd, currentRenderTarget.customColorBuffer.Value, currentRenderTarget.customDepthBuffer.Value, clearFlags);
             else
-                CoreUtils.SetRenderTarget(cmd, currentRenderTarget.customColorBuffer, clearFlags);
+                CoreUtils.SetRenderTarget(cmd, currentRenderTarget.customColorBuffer.Value, clearFlags);
         }
 
         /// <summary>
@@ -278,8 +278,8 @@ namespace UnityEngine.Rendering.HighDefinition
             if (!isExecuting)
                 throw new Exception("GetCustomBuffers can only be called inside the CustomPass.Execute function");
 
-            colorBuffer = currentRenderTarget.customColorBuffer;
-            depthBuffer = currentRenderTarget.customDepthBuffer;
+            colorBuffer = currentRenderTarget.customColorBuffer.Value;
+            depthBuffer = currentRenderTarget.customDepthBuffer.Value;
         }
 
         /// <summary>
