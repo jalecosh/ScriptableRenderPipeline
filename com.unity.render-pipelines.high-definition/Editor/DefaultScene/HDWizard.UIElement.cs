@@ -395,7 +395,7 @@ namespace UnityEditor.Rendering.HighDefinition
                 public static readonly Texture ok = CoreEditorUtils.LoadIcon(k_IconFolder, "OK");
                 public static readonly Texture error = CoreEditorUtils.LoadIcon(k_IconFolder, "Error");
 
-                public const int k_IndentStepSize = 13;
+                public const int k_IndentStepSize = 15;
             }
 
             public ConfigInfoLine(string label, string error, string resolverButtonLabel, Func<bool> tester, Action resolver, int indent = 0)
