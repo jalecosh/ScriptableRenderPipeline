@@ -35,7 +35,7 @@ namespace UnityEngine.Rendering.HighDefinition
         /// <summary>
         /// Where the custom passes are going to be injected in HDRP
         /// </summary>
-        public CustomPassInjectionPoint injectionPoint;
+        public CustomPassInjectionPoint injectionPoint = CustomPassInjectionPoint.BeforeTransparent;
 
         /// <summary>
         /// Fade value between 0 and 1. it represent how close you camera is from the collider of the custom pass.  
@@ -77,6 +77,10 @@ namespace UnityEngine.Rendering.HighDefinition
         internal bool Execute(ScriptableRenderContext renderContext, CommandBuffer cmd, HDCamera hdCamera, CullingResults cullingResult, SharedRTManager rtManager, CustomPass.RenderTargets targets)
         {
             bool executed = false;
+
+            // We never execute volume if the layer is not within the culling layers of the camera
+            if ((hdCamera.volumeLayerMask & (1 << gameObject.layer)) == 0)
+                return false;
 
             Shader.SetGlobalFloat(HDShaderIDs._CustomPassInjectionPoint, (float)injectionPoint);
 
