@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine.Rendering;
 using UnityEngine.Experimental.Rendering;
+using System;
 
 namespace UnityEngine.Rendering.HighDefinition
 {
@@ -24,12 +25,14 @@ namespace UnityEngine.Rendering.HighDefinition
         //Filter settings
         public CustomPass.RenderQueueType renderQueueType = CustomPass.RenderQueueType.AllOpaque;
         public string[] passNames = new string[1] { "Forward" };
-        public LayerMask layerMask = -1;
+        public LayerMask layerMask = 1; // Layer mask Default enabled
         public SortingCriteria sortingCriteria = SortingCriteria.CommonOpaque;
 
         // Override material
         public Material overrideMaterial = null;
-        public int overrideMaterialPassIndex = 0;
+        [SerializeField]
+        int overrideMaterialPassIndex = 0;
+        public string overrideMaterialPassName = "Forward";
 
         public bool overrideDepthState = false;
         public CompareFunction depthCompareFunction = CompareFunction.LessEqual;
@@ -48,6 +51,10 @@ namespace UnityEngine.Rendering.HighDefinition
         protected override void Setup(ScriptableRenderContext renderContext, CommandBuffer cmd)
         {
             fadeValueId = Shader.PropertyToID("_FadeValue");
+
+            // In case there was a pass index assigned, we retrieve the name of this pass
+            if (String.IsNullOrEmpty(overrideMaterialPassName) && overrideMaterial != null)
+                overrideMaterialPassName = overrideMaterial.GetPassName(overrideMaterialPassIndex);
 
             forwardShaderTags = new ShaderTagId[] {
                 HDShaderPassNames.s_ForwardName,            // HD Lit shader
@@ -88,7 +95,7 @@ namespace UnityEngine.Rendering.HighDefinition
             var shaderPasses = GetShaderTagIds();
             if (overrideMaterial != null)
             {
-                shaderPasses[forwardShaderTags.Length - 1] = new ShaderTagId(overrideMaterial.GetPassName(overrideMaterialPassIndex));
+                shaderPasses[forwardShaderTags.Length - 1] = new ShaderTagId(overrideMaterialPassName);
                 overrideMaterial.SetFloat(fadeValueId, fadeValue);
             }
 
@@ -112,7 +119,7 @@ namespace UnityEngine.Rendering.HighDefinition
                 sortingCriteria = sortingCriteria,
                 excludeObjectMotionVectors = false,
                 overrideMaterial = overrideMaterial,
-                overrideMaterialPassIndex = (overrideMaterial != null) ? overrideMaterialPassIndex : 0,
+                overrideMaterialPassIndex = (overrideMaterial != null) ? overrideMaterial.FindPass(overrideMaterialPassName) : 0,
                 stateBlock = stateBlock,
                 layerMask = layerMask,
             };

@@ -9,7 +9,7 @@ namespace UnityEngine.Rendering.HighDefinition
     /// Class that holds data and logic for the pass to be executed
     /// </summary>
     [System.Serializable]
-    public abstract class CustomPass
+    public abstract class CustomPass : IVersionable<DrawRenderersCustomPass.Version>
     {
         /// <summary>
         /// Name of the custom pass
@@ -91,6 +91,19 @@ namespace UnityEngine.Rendering.HighDefinition
             public RTHandle cameraColorBuffer;
             public RTHandle customColorBuffer;
             public RTHandle customDepthBuffer;
+        }
+
+        enum Version
+        {
+            Initial,
+        }
+
+        [SerializeField]
+        Version     m_Version = Version.Initial;
+        Version IVersionable<Version>.version
+        {
+            get => m_Version;
+            set => m_Version = value;
         }
 
         internal void ExecuteInternal(ScriptableRenderContext renderContext, CommandBuffer cmd, HDCamera hdCamera, CullingResults cullingResult, SharedRTManager rtManager, RenderTargets targets, CustomPassVolume owner)
@@ -330,14 +343,14 @@ namespace UnityEngine.Rendering.HighDefinition
         /// <param name="queue">The render queue filter to select which object will be rendered</param>
         /// <param name="mask">The layer mask to select which layer(s) will be rendered</param>
         /// <param name="overrideMaterial">The replacement material to use when renering objects</param>
-        /// <param name="overrideMaterialPassIndex">The pass to use in the override material</param>
+        /// <param name="overrideMaterialPassName">The pass name to use in the override material</param>
         /// <param name="sorting">Sorting options when rendering objects</param>
         /// <param name="clearFlags">Clear options when the target buffers are bound. Before executing the pass</param>
         /// <param name="targetColorBuffer">Target Color buffer</param>
         /// <param name="targetDepthBuffer">Target Depth buffer. Note: It's also the buffer which will do the Depth Test</param>
         /// <returns></returns>
         public static CustomPass CreateDrawRenderersPass(RenderQueueType queue, LayerMask mask,
-            Material overrideMaterial, int overrideMaterialPassIndex = 0, SortingCriteria sorting = SortingCriteria.CommonOpaque,
+            Material overrideMaterial, string overrideMaterialPassName = "Forward", SortingCriteria sorting = SortingCriteria.CommonOpaque,
             ClearFlag clearFlags = ClearFlag.None, TargetBuffer targetColorBuffer = TargetBuffer.Camera,
             TargetBuffer targetDepthBuffer = TargetBuffer.Camera)
         {
@@ -347,7 +360,7 @@ namespace UnityEngine.Rendering.HighDefinition
                 renderQueueType = queue,
                 layerMask = mask,
                 overrideMaterial = overrideMaterial,
-                overrideMaterialPassIndex = overrideMaterialPassIndex,
+                overrideMaterialPassName = overrideMaterialPassName,
                 sortingCriteria = sorting,
                 clearFlags = clearFlags,
                 targetColorBuffer = targetColorBuffer,

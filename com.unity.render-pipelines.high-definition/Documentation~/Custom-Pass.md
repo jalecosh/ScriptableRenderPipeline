@@ -243,6 +243,8 @@ One of the tricky thing here is the `shaderTags`, it is a filter for which objec
 
 For the `renderQueueRange`, you can use the `GetRenderQueueRange` function in the `CustomPass` class that converts `CustomPass.RenderQueueType` (which is what you have in the ui to configure the render queue) into a `RenderQueueRange` that you can use in `RendererListDesc`.
 
+> **⚠️ WARNING: Be careful with the override material pass index:** when you call the DrawRenderers with an [override material](https://docs.unity3d.com/ScriptReference/Rendering.DrawingSettings-overrideMaterial.html), then you need to select which pass you're going to render using the override material pass index. But in build, this index can be changed after that the shader stripper removed passes from shader (like every HDRP shaders) and that will shift the pass indices in the shader and so your index will become invalid. To prevent this issue, we recommend to store the name of the pass and then use `Material.FindPass` when issuing the draw.
+
 ### Scripting the volume component
 
 You can retrieve the `CustomPassVolume` in script using [GetComponent](https://docs.unity3d.com/2019.3/Documentation/ScriptReference/GameObject.GetComponent.html) and access most of the things available from the UI like `isGlobal`, `fadeRadius` and `injectionPoint`.
