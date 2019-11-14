@@ -23,6 +23,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added more detailed ray tracing stats in the debug window
 - Added Disc area light (bake only)
 - Added a warning in the material UI to prevent transparent + subsurface-scattering combination.
+- Added two more injection points for Custom Passes: AfterDepthAndNormal and BeforePreRefraction
+- Added a ShaderPasses enum in DrawRenderers to choose the shader tags used for drawing objects (DepthPrepass or Forward).
+- Added support to draw lit objects in the BeforePreRefraction, BeforeTransparent and BeforePostProcess.
+- Added a None option when binding custom pass render targets to allow binding only depth or color.
+- Added lazy loading for custom pass buffers so they are not allocated if they're not used.
+- Added a Custom Pass entry in the volume create asset menu items.
 
 ### Fixed
 - Sorting, undo, labels, layout in the Lighting Explorer.
@@ -116,6 +122,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed issue when upgrading a Standard transparent material (case 1186874)
 - Fixed area light cookies not working properly with stack lit
 - Fixed material render queue not updated when the shader is changed in the material inspector.
+- Fixed custom fullscreen passes in VR
+- Fixed camera culling masks not taken in account in custom pass volumes
+- Fixed object not drawn in custom pass when using a DrawRenderers with an HDRP shader in a build.
 
 ### Changed
 - Color buffer pyramid is not allocated anymore if neither refraction nor distortion are enabled
