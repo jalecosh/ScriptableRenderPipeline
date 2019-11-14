@@ -14,7 +14,7 @@ namespace UnityEngine.Rendering.HighDefinition
         // Fullscreen pass settings
         public Material         fullscreenPassMaterial;
         [SerializeField]
-        int                     materialPassIndex;
+        int                     materialPassIndex = 0;
         public string           materialPassName = "Custom Pass 0";
         public bool             fetchColorBuffer;
 
