@@ -6,6 +6,11 @@
     left: 180px;
 }
 
+#DefaultResourceFolder > Label, #NewScene > Label, #NewDXRScene > Label
+{
+    width: 165px;
+}
+
 #TestLabel
 {
     width: 180px;
