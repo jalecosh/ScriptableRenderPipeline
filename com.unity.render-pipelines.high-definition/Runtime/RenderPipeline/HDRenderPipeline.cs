@@ -975,7 +975,7 @@ namespace UnityEngine.Rendering.HighDefinition
                 // Off screen rendering is disabled for most of the frame by default.
                 cmd.SetGlobalInt(HDShaderIDs._OffScreenRendering, 0);
                 cmd.SetGlobalFloat(HDShaderIDs._ReplaceDiffuseForIndirect, hdCamera.frameSettings.IsEnabled(FrameSettingsField.ReplaceDiffuseForIndirect) ? 1.0f : 0.0f);
-                cmd.SetGlobalInt(HDShaderIDs._EnableSkyLighting, hdCamera.frameSettings.IsEnabled(FrameSettingsField.SkyLighting) ? 1 : 0);
+                cmd.SetGlobalInt(HDShaderIDs._EnableSkyReflection, hdCamera.frameSettings.IsEnabled(FrameSettingsField.SkyReflection) ? 1 : 0);
 
                 m_SkyManager.SetGlobalSkyData(cmd, hdCamera);
 
@@ -1720,7 +1720,7 @@ namespace UnityEngine.Rendering.HighDefinition
                         }
 
                         // Render XR mirror view once all render requests have been completed
-                        if (i == 0)
+                        if (i == 0 && renderRequest.hdCamera.camera.cameraType == CameraType.Game)
                         {
                             m_XRSystem.RenderMirrorView(cmd);
                         }
@@ -1914,6 +1914,10 @@ namespace UnityEngine.Rendering.HighDefinition
 
             // In both forward and deferred, everything opaque should have been rendered at this point so we can safely copy the depth buffer for later processing.
             GenerateDepthPyramid(hdCamera, cmd, FullScreenDebugMode.DepthPyramid);
+
+            // Send all the geometry graphics buffer to client systems if required (must be done after the pyramid and before the transparent depth pre-pass)
+            SendGeometryGraphicsBuffers(cmd, hdCamera);
+
             // Depth texture is now ready, bind it (Depth buffer could have been bind before if DBuffer is enable)
             cmd.SetGlobalTexture(HDShaderIDs._CameraDepthTexture, m_SharedRTManager.GetDepthTexture());
 
@@ -2217,6 +2221,24 @@ namespace UnityEngine.Rendering.HighDefinition
 
             bool hasAfterPostProcessCustomPass = RenderCustomPass(renderContext, cmd, hdCamera, cullingResults, CustomPassInjectionPoint.AfterPostProcess);
 
+            // Copy and rescale depth buffer for XR devices
+            if (hdCamera.xr.enabled && hdCamera.xr.copyDepth)
+            {
+                using (new ProfilingSample(cmd, "XR depth copy"))
+                {
+                    var depthBuffer = m_SharedRTManager.GetDepthStencilBuffer();
+                    var rtScale = depthBuffer.rtHandleProperties.rtHandleScale / DynamicResolutionHandler.instance.GetCurrentScale();
+
+                    m_CopyDepthPropertyBlock.SetTexture(HDShaderIDs._InputDepth, depthBuffer);
+                    m_CopyDepthPropertyBlock.SetVector(HDShaderIDs._BlitScaleBias, rtScale);
+                    m_CopyDepthPropertyBlock.SetInt("_FlipY", 1);
+
+                    cmd.SetRenderTarget(target.id, 0, CubemapFace.Unknown, -1);
+                    cmd.SetViewport(hdCamera.finalViewport);
+                    CoreUtils.DrawFullScreen(cmd, m_CopyDepth, m_CopyDepthPropertyBlock);
+                }
+            }
+
             // In developer build, we always render post process in m_AfterPostProcessBuffer at (0,0) in which we will then render debug.
             // Because of this, we need another blit here to the final render target at the right viewport.
             if (!HDUtils.PostProcessIsFinalPass() || aovRequest.isValid || hasAfterPostProcessCustomPass)
@@ -2241,8 +2263,8 @@ namespace UnityEngine.Rendering.HighDefinition
             // XR mirror view and blit do device
             hdCamera.xr.EndCamera(cmd, hdCamera, renderContext);
 
-            // Send all required graphics buffer to client systems.
-            SendGraphicsBuffers(cmd, hdCamera);
+            // Send all the color graphics buffer to client systems if required.
+            SendColorGraphicsBuffer(cmd, hdCamera);
 
             // Due to our RT handle system we don't write into the backbuffer depth buffer (as our depth buffer can be bigger than the one provided)
             // So we need to do a copy of the corresponding part of RT depth buffer in the target depth buffer in various situation:
@@ -2255,7 +2277,7 @@ namespace UnityEngine.Rendering.HighDefinition
 #if UNITY_EDITOR
             copyDepth = copyDepth || hdCamera.isMainGameView; // Specific case of Debug.DrawLine and Debug.Ray
 #endif
-            if (copyDepth)
+            if (copyDepth && !hdCamera.xr.enabled)
             {
                 using (new ProfilingSample(cmd, "Copy Depth in Target Texture", CustomSamplerId.CopyDepth.GetSampler()))
                 {
@@ -2264,6 +2286,7 @@ namespace UnityEngine.Rendering.HighDefinition
                     m_CopyDepthPropertyBlock.SetTexture(HDShaderIDs._InputDepth, m_SharedRTManager.GetDepthStencilBuffer());
                     // When we are Main Game View we need to flip the depth buffer ourselves as we are after postprocess / blit that have already flipped the screen
                     m_CopyDepthPropertyBlock.SetInt("_FlipY", hdCamera.isMainGameView ? 1 : 0);
+                    m_CopyDepthPropertyBlock.SetVector(HDShaderIDs._BlitScaleBias, new Vector4(1.0f, 1.0f, 0.0f, 0.0f));
                     CoreUtils.DrawFullScreen(cmd, m_CopyDepth, m_CopyDepthPropertyBlock);
                 }
             }
@@ -4197,7 +4220,7 @@ namespace UnityEngine.Rendering.HighDefinition
             }
         }
 
-        void SendGraphicsBuffers(CommandBuffer cmd, HDCamera hdCamera)
+        void SendGeometryGraphicsBuffers(CommandBuffer cmd, HDCamera hdCamera)
         {
             bool needNormalBuffer = false;
             Texture normalBuffer = null;
@@ -4259,6 +4282,12 @@ namespace UnityEngine.Rendering.HighDefinition
             {
                 VFXManager.SetCameraBuffer(hdCamera.camera, VFXCameraBufferTypes.Normal, normalBuffer, 0, 0, hdCamera.actualWidth, hdCamera.actualHeight);
             }
+        }
+
+        void SendColorGraphicsBuffer(CommandBuffer cmd, HDCamera hdCamera)
+        {
+            // Figure out which client systems need which buffers
+            VFXCameraBufferTypes neededVFXBuffers = VFXManager.IsCameraBufferNeeded(hdCamera.camera);
 
             if ((neededVFXBuffers & VFXCameraBufferTypes.Color) != 0)
             {
