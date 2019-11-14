@@ -136,6 +136,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed Light units not matching light type
 - Fixed QualitySettings panel not displaying HDRP Asset
 - Fixed y-flip in scene view with XR SDK
+- Fixed a number of issues with Material Quality setting
 
 ### Changed
 - Color buffer pyramid is not allocated anymore if neither refraction nor distortion are enabled
