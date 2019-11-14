@@ -45,6 +45,7 @@
 {
     -unity-text-align: middle-left;
     white-space: normal;
+    margin-right: 32px;
 }
 
 #TestRow
