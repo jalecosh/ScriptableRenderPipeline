@@ -120,7 +120,7 @@ namespace UnityEngine.Rendering.HighDefinition
         FinalPost,
         CustomPostProcessBeforePP,
         CustomPostProcessAfterPP,
-        CustomPostProcessBeforeTransparent,
+        CustomPostProcessAfterOpaqueAndSky,
 
         Max
     }

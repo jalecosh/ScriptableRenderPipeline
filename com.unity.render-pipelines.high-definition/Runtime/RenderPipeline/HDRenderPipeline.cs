@@ -2132,7 +2132,7 @@ namespace UnityEngine.Rendering.HighDefinition
 
                 RenderSky(hdCamera, cmd);
 
-                m_PostProcessSystem.DoUserBeforeTransparent(cmd, hdCamera, m_CameraColorBuffer);
+                m_PostProcessSystem.DoUserAfterOpaqueAndSky(cmd, hdCamera, m_CameraColorBuffer);
 
                 RenderTransparentDepthPrepass(cullingResults, hdCamera, renderContext, cmd);
 
