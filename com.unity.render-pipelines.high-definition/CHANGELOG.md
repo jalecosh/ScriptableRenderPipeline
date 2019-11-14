@@ -23,6 +23,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added more detailed ray tracing stats in the debug window
 - Added Disc area light (bake only)
 - Added a warning in the material UI to prevent transparent + subsurface-scattering combination.
+- Added XR single-pass setting into HDRP asset
+- Added a penumbra tint option for lights
+- Added support for depth copy with XR SDK
+- Added debug setting to Render Pipeline Window to list the active XR views
 - Added two more injection points for Custom Passes: AfterDepthAndNormal and BeforePreRefraction
 - Added a ShaderPasses enum in DrawRenderers to choose the shader tags used for drawing objects (DepthPrepass or Forward).
 - Added support to draw lit objects in the BeforePreRefraction, BeforeTransparent and BeforePostProcess.
@@ -122,6 +126,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed issue when upgrading a Standard transparent material (case 1186874)
 - Fixed area light cookies not working properly with stack lit
 - Fixed material render queue not updated when the shader is changed in the material inspector.
+- Fixed a number of issues with full screen debug modes not reseting correctly when setting another mutually exclusive mode
+- Fixed compile errors for platforms with no VR support
+- Fixed an issue with volumetrics and RTHandle scaling (case 1155236)
+- Fixed an issue where sky lighting might be updated uselessly
+- Fixed issue preventing to allow setting decal material to none (case 1196129)
+- Fixed XR multi-pass decals rendering
+- Fixed several fields on Light Inspector that not supported Prefab overrides
+- Fixed EOL for some files
+- Fixed scene view rendering with volumetrics and XR enabled
+- Fixed decals to work with multiple cameras
+- Fixed optional clear of GBuffer (Was always on)
+- Fixed render target clears with XR single-pass rendering
+- Fixed HDRP samples file hierarchy
+- Fixed Light units not matching light type
+- Fixed QualitySettings panel not displaying HDRP Asset
+- Fixed y-flip in scene view with XR SDK
+- Fixed Decal projectors do not immediately respond when parent object layer mask is changed in editor.
 - Fixed custom fullscreen passes in VR
 - Fixed camera culling masks not taken in account in custom pass volumes
 - Fixed object not drawn in custom pass when using a DrawRenderers with an HDRP shader in a build.
@@ -146,6 +167,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The support of LOD CrossFade (Dithering transition) in master nodes now required to enable it in the master node settings (Save variant)
 - Improved shadow bias, by removing constant depth bias and substituting it with slope-scale bias. 
 - Fix the default stencil values when a material is created from a SSS ShaderGraph.
+- Tweak test asset to be compatible with XR: unlit SG material for canvas and double-side font material
+- Slightly tweaked the behaviour of bloom when resolution is low to reduce artifacts.
+- Hidden fields in Light Inspector that is not relevant while in BakingOnly mode.
+- Changed parametrization of PCSS, now softness is derived from angular diameter (for directional lights) or shape radius (for point/spot lights) and min filter size is now in the [0..1] range.
+- Moved the copy of the geometry history buffers to right after the depth mip chain generation.
+- Rename "Luminance" to "Nits" in UX for physical light unit
+- Rename FrameSettings "SkyLighting" to "SkyReflection"
 
 ## [7.1.1] - 2019-09-05
 
