@@ -21,6 +21,7 @@ namespace UnityEngine.Rendering.HighDefinition
             ShadowResolution,
             RemoveAdditionalShadowData,
             AreaLightShapeTypeLogicIsolation,
+            PCSSUIUpdate,
         }
 
         /// <summary>
@@ -89,7 +90,6 @@ namespace UnityEngine.Rendering.HighDefinition
                         data.shadowFadeDistance = additionalShadow.shadowFadeDistance;
                         data.shadowTint = additionalShadow.shadowTint;
                         data.normalBias = additionalShadow.normalBias;
-                        data.constantBias = additionalShadow.constantBias;
                         data.shadowUpdateMode = additionalShadow.shadowUpdateMode;
                         data.shadowCascadeRatios = additionalShadow.shadowCascadeRatios;
                         data.shadowCascadeBorders = additionalShadow.shadowCascadeBorders;
@@ -136,7 +136,13 @@ namespace UnityEngine.Rendering.HighDefinition
                             break;
                         //No other AreaLight types where supported at this time
                     }
+                }),
+                MigrationStep.New(Version.PCSSUIUpdate, (HDAdditionalLightData data) =>
+                {
+                    // The min filter size is now in the [0..1] range when user facing
+                    data.minFilterSize = data.minFilterSize * 1000.0f;
                 })
+
             );
 #pragma warning restore 0618, 0612
 
@@ -154,12 +160,12 @@ namespace UnityEngine.Rendering.HighDefinition
             SetEmissiveMeshRendererEnabled(true);
         }
 
-        //Migration function called in:
-        // - OnValidate()
-        // - Awake()
-        // both function are called at instance
         void Migrate()
-            => k_HDLightMigrationSteps.Migrate(this);
+        {
+            k_HDLightMigrationSteps.Migrate(this);
+            // OnValidate might be called before migration but migration is needed to call UpdateBounds() properly so we call it again here to make sure that they are updated properly.
+            OnValidate();
+        }
 
         void Awake() => Migrate();
 

@@ -42,7 +42,7 @@ namespace UnityEngine.Rendering.HighDefinition
         Lumen,      // lm = total power/flux emitted by the light
         Candela,    // lm/sr = flux per steradian
         Lux,        // lm/m² = flux per unit area
-        Luminance,  // lm/m²/sr = flux per unit area and per steradian
+        Nits,       // lm/m²/sr = flux per unit area and per steradian
         Ev100,      // ISO 100 Exposure Value (https://en.wikipedia.org/wiki/Exposure_value)
     }
 
@@ -54,7 +54,7 @@ namespace UnityEngine.Rendering.HighDefinition
     internal enum AreaLightUnit
     {
         Lumen = LightUnit.Lumen,
-        Luminance = LightUnit.Luminance,
+        Nits = LightUnit.Nits,
         Ev100 = LightUnit.Ev100,
     }
 
@@ -75,7 +75,7 @@ namespace UnityEngine.Rendering.HighDefinition
         OnEnable,
         OnDemand
     }
-    
+
     // Light layering
     public enum LightLayerEnum
     {
@@ -156,7 +156,7 @@ namespace UnityEngine.Rendering.HighDefinition
             => type != HDLightTypeAndShape.TubeArea
             && type != HDLightTypeAndShape.DiscArea;
     }
-    
+
     public partial class HDAdditionalLightData
     {
         //Private enum to differentiate built-in LightType.Point that can be Area or Point in HDRP
@@ -169,7 +169,7 @@ namespace UnityEngine.Rendering.HighDefinition
 
         [System.NonSerialized]
         static Dictionary<int, LightUnit[]> supportedLightTypeCache = new Dictionary<int, LightUnit[]>();
-        
+
         [SerializeField, FormerlySerializedAs("lightTypeExtent"), FormerlySerializedAs("m_LightTypeExtent")]
         PointLightHDType m_PointlightHDType = PointLightHDType.Punctual;
 
@@ -353,7 +353,7 @@ namespace UnityEngine.Rendering.HighDefinition
                 default: throw new Exception($"Unknown {typeof(HDLightType)}: {type}");
             }
         }
-        
+
         string GetLightTypeName()
         {
             if (type == HDLightType.Area)
@@ -427,7 +427,7 @@ namespace UnityEngine.Rendering.HighDefinition
                         case PointLightHDType.Punctual: return HDLightType.Point;
                         case PointLightHDType.Area: return HDLightType.Area;
                         default:
-                            Debug.Assert(false, $"Unknown {typeof(PointLightHDType).Name} {m_PointlightHDType}. Fallback on Punctual");
+                            //Debug.Assert(false, $"Unknown {typeof(PointLightHDType).Name} {m_PointlightHDType}. Fallback on Punctual");
                             return HDLightType.Point;
                     }
                 case LightType.Disc:
