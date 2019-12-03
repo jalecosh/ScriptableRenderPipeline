@@ -227,10 +227,18 @@ half MainLightRealtimeShadow(float4 shadowCoord)
     return SampleShadowmap(TEXTURE2D_ARGS(_MainLightShadowmapTexture, sampler_MainLightShadowmapTexture), shadowCoord, shadowSamplingData, shadowParams, false);
 }
 
-half AdditionalLightRealtimeShadow(int lightIndex, float3 positionWS)
+half AdditionalLightRealtimeShadow(int lightIndex, float3 positionWS, float4 shadowmask)
 {
 #if !defined(ADDITIONAL_LIGHT_CALCULATE_SHADOWS)
     return 1.0h;
+#endif
+
+#if defined(SHADOWS_SHADOWMASK) && defined(LIGHTMAP_ON)
+    int chanel = _AdditionalLightsSpotDir[lightIndex].w;
+    if (chanel >= 1 && chanel <= 4)
+         return shadowmask[chanel - 1];
+    else
+        return 1.0f;
 #endif
 
     ShadowSamplingData shadowSamplingData = GetAdditionalLightShadowSamplingData();
